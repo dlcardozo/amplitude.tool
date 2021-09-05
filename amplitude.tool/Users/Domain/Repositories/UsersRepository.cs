@@ -6,6 +6,6 @@ namespace amplitude.tool.Users.Domain.Repositories
 {
     public interface UsersRepository
     {
-        IObservable<Unit> Register(User expected);
+        IObservable<Unit> Register(User newUser);
     }
 }

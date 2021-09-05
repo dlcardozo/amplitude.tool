@@ -8,6 +8,10 @@ namespace amplitude.tool.Users.Infrastructure
 {
     public class InMemoryUsersRepository : UsersRepository
     {
-        public IObservable<Unit> Register(User expected) => Observable.Return(Unit.Default);
+        User currentUser;
+
+        public IObservable<Unit> Register(User newUser) => 
+            Observable.Return(Unit.Default)
+                .Do(_ => currentUser = newUser);
     }
 }
