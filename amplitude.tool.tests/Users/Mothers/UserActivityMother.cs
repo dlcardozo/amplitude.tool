@@ -11,7 +11,7 @@ namespace amplitude.tool.tests.Users.Mothers
                 withTrackedEvents ?? new List<TrackedEvent>()
             );
 
-        public static UserActivity AnUserActivityWithOneTrackedEvent(TrackedEvent? withTrackedEvent = null) =>
+        public static UserActivity AnUserActivityWithOne(TrackedEvent? withTrackedEvent = null) =>
             AnUserActivity(
                 new List<TrackedEvent> { withTrackedEvent ?? ATrackedEvent() }
             );

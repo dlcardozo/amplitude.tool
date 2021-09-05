@@ -16,11 +16,11 @@ namespace amplitude.tool.tests.Users.Actions
         public void Emit_Activities()
         {
             var onActivitiesFetched = AnEvent<UserActivity>();
-            var expected = AnUserActivityWithOneTrackedEvent(ATrackedEvent("install_push"));
+            var expected = AnUserActivityWithOne(ATrackedEvent("install_push"));
             
             Given(new FetchActivity(
                     onActivitiesFetched,
-                    AnUserActivityRepository(AnUserActivityWithOneTrackedEvent(ATrackedEvent("install_push")))
+                    AnUserActivityRepository(withUserActivity: AnUserActivityWithOne(ATrackedEvent("install_push")))
                 ))
                 .When(action => action.Do(new UserId("SomeUser")))
                 .Then(_ => onActivitiesFetched, it => it.Receives(expected))
