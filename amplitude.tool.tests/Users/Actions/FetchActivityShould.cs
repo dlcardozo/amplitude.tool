@@ -1,7 +1,7 @@
-using amplitude.tool.Users.Domain.Actions;
 using amplitude.tool.Users.Domain.Model;
 using NUnit.Framework;
 using static amplitude.tool.tests.Mothers.EventMother;
+using static amplitude.tool.tests.Users.Mothers.FetchActivityMother;
 using static amplitude.tool.tests.Users.Mothers.TrackedEventMother;
 using static amplitude.tool.tests.Users.Mothers.UserActivityMother;
 using static amplitude.tool.tests.Users.Mothers.UserActivityRepositoryMother;
@@ -18,7 +18,7 @@ namespace amplitude.tool.tests.Users.Actions
             var onActivitiesFetched = AnEvent<UserActivity>();
             var expected = AnUserActivityWithOne(ATrackedEvent("install_push"));
             
-            Given(new FetchActivity(
+            Given(AFetchActivity(
                     onActivitiesFetched,
                     AnUserActivityRepository(withUserActivity: AnUserActivityWithOne(ATrackedEvent("install_push")))
                 ))
