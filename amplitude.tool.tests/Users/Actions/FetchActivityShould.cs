@@ -26,20 +26,5 @@ namespace amplitude.tool.tests.Users.Actions
                 .Then(_ => onActivitiesFetched, it => it.Receives(expected))
                 .Run();
         }
-
-        [Test]
-        public void Emit_Activities_2()
-        {
-            var onActivitiesFetched = AnEvent<UserActivity>();
-            var expected = AnUserActivityWithOneTrackedEvent(ATrackedEvent("session_end"));
-            
-            Given(new FetchActivity(
-                    onActivitiesFetched,
-                    AnUserActivityRepository(AnUserActivityWithOneTrackedEvent(ATrackedEvent("session_end")))
-                ))
-                .When(action => action.Do(new UserId("AnotherUser")))
-                .Then(_ => onActivitiesFetched, it => it.Receives(expected))
-                .Run();
-        }
     }
 }
