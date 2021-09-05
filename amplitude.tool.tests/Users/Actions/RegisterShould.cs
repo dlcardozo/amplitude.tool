@@ -6,7 +6,7 @@ using amplitude.tool.Users.Infrastructure;
 using NSubstitute;
 using NUnit.Framework;
 using static amplitude.tool.tests.Mothers.EventMother;
-using static amplitude.tool.tests.Users.Actions.RegisterMother;
+using static amplitude.tool.tests.Users.Mothers.RegisterMother;
 using static BDD.Context;
 
 namespace amplitude.tool.tests.Users.Actions
