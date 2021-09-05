@@ -1,7 +1,7 @@
-using System;
-using System.Reactive;
-using System.Reactive.Linq;
-using System.Reactive.Subjects;
+using amplitude.tool.Users.Domain.Actions;
+using amplitude.tool.Users.Domain.Model;
+using amplitude.tool.Users.Domain.Repositories;
+using amplitude.tool.Users.Infrastructure;
 using NSubstitute;
 using NUnit.Framework;
 using static amplitude.tool.tests.Mothers.EventMother;
@@ -36,56 +36,6 @@ namespace amplitude.tool.tests.Users.Actions
                 .When(action => action.Do("UserId"))
                 .Then(() => repository.Received(1).Register(expected))
                 .Run();
-        }
-    }
-
-    public interface UsersRepository
-    {
-        IObservable<Unit> Register(User expected);
-    }
-    
-    public class InMemoryUsersRepository : UsersRepository
-    {
-        public IObservable<Unit> Register(User expected) => Observable.Return(Unit.Default);
-    }
-
-    public struct User
-    {
-        public readonly UserId UserId;
-
-        public User(UserId userId)
-        {
-            UserId = userId;
-        }
-    }
-
-    public struct UserId
-    {
-        public readonly string Value;
-
-        public UserId(string value)
-        {
-            Value = value;
-        }
-    }
-
-    public class Register
-    {
-        readonly ISubject<User> onUserRegistered;
-        readonly UsersRepository usersRepository;
-
-        public Register(ISubject<User> onUserRegistered, UsersRepository usersRepository)
-        {
-            this.onUserRegistered = onUserRegistered;
-            this.usersRepository = usersRepository;
-        }
-
-        public void Do(string userid)
-        {
-            var newUser = new User(new UserId(userid));
-            onUserRegistered.OnNext(newUser);
-            usersRepository.Register(newUser)
-                .Subscribe();
         }
     }
 }
