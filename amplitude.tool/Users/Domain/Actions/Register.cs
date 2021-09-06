@@ -1,4 +1,5 @@
 using System;
+using System.Reactive.Linq;
 using System.Reactive.Subjects;
 using amplitude.tool.Users.Domain.Model;
 using amplitude.tool.Users.Domain.Repositories;
@@ -19,8 +20,8 @@ namespace amplitude.tool.Users.Domain.Actions
         public void Do(string userid)
         {
             var newUser = new User(new UserId(userid));
-            onUserRegistered.OnNext(newUser);
             usersRepository.Register(newUser)
+                .Do(_ => onUserRegistered.OnNext(newUser))
                 .Subscribe();
         }
     }
