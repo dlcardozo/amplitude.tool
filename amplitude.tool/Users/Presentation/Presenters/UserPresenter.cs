@@ -2,7 +2,6 @@ using amplitude.tool.Users.Domain.Actions;
 using amplitude.tool.Users.Infrastructure;
 using amplitude.tool.Users.Presentation.Views;
 using System;
-using System.Reactive.Linq;
 using amplitude.tool.Users.Domain.Repositories;
 
 namespace amplitude.tool.Users.Presentation.Presenters
@@ -11,23 +10,18 @@ namespace amplitude.tool.Users.Presentation.Presenters
     {
         readonly IUserView view;
         Register register;
-        FetchActivity fetchActivity;
         UsersRepository usersRepository;
-        UserActivityRepository userActivityRepository;
 
-        public UserPresenter(IUserView userView, string amplitudeKey, string amplitudeSecretKey)
+        public UserPresenter(IUserView userView)
         {
             view = userView;
 
             usersRepository = new InMemoryUsersRepository();
-            userActivityRepository = new AmplitudeUserActivityRepository(amplitudeKey, amplitudeSecretKey);
             register = new Register(Context.Instance.OnUserRegistered, usersRepository);
-            fetchActivity = new FetchActivity(Context.Instance.OnActivitiesFetched, userActivityRepository);
 
             Context.Instance
                 .OnUserRegistered
-                .Do(user => view.ShowUserRegistered(user.UserId.Value))
-                .Subscribe(user => fetchActivity.Do(user.UserId));
+                .Subscribe(user => view.ShowUserRegistered(user.UserId.Value));
         }
 
         public void Init() => 

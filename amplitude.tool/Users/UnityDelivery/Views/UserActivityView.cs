@@ -9,9 +9,9 @@ namespace amplitude.tool.Users.UnityDelivery.Views
     {
         readonly UserActivityPresenter presenter;
 
-        public UserActivityView()
+        public UserActivityView(string amplitudeKey, string amplitudeSecretKey)
         {
-            presenter = new UserActivityPresenter(this);
+            presenter = new UserActivityPresenter(this, amplitudeKey, amplitudeSecretKey);
         }
 
         public void ShowUserActivitiesFetched(UserActivity userActivities) =>

@@ -22,10 +22,10 @@ namespace amplitude.tool
             amplitude_key = args[0];
             amplitude_secret_key = args[1];
             
-            userView = new UserView(amplitude_key, amplitude_secret_key);
+            userView = new UserView();
             userView.Init();
 
-            userActivityView = new UserActivityView();
+            userActivityView = new UserActivityView(amplitude_key, amplitude_secret_key);
 
             CloseOn();
             ExitWhenNotStuck();   
