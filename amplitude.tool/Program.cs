@@ -1,8 +1,10 @@
 ﻿using System;
+using System.Net.Http;
 using System.Reactive;
 using System.Reactive.Concurrency;
 using System.Reactive.Linq;
 using System.Threading;
+using amplitude.tool.Users;
 using amplitude.tool.Users.UnityDelivery.Views;
 
 namespace amplitude.tool
@@ -10,12 +12,20 @@ namespace amplitude.tool
     class Program
     {
         static UserView userView;
+        static UserActivityView userActivityView;
         static bool stuck = true;
+        static string amplitude_key = string.Empty;
+        static string amplitude_secret_key = string.Empty;
 
         static void Main(string[] args)
         {
-            userView = new UserView();
+            amplitude_key = args[0];
+            amplitude_secret_key = args[1];
+            
+            userView = new UserView(amplitude_key, amplitude_secret_key);
             userView.Init();
+
+            userActivityView = new UserActivityView();
 
             CloseOn();
             ExitWhenNotStuck();   

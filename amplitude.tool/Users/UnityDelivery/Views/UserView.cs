@@ -8,9 +8,9 @@ namespace amplitude.tool.Users.UnityDelivery.Views
     {
         UserPresenter presenter;
 
-        public UserView()
+        public UserView(string amplitudeKey, string amplitudeSecretKey)
         {
-            presenter = new UserPresenter(this);
+            presenter = new UserPresenter(this, amplitudeKey, amplitudeSecretKey);
         }
 
         public void Init() =>
