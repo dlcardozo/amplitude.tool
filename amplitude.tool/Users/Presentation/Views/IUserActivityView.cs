@@ -1,7 +1,9 @@
-namespace amplitude.tool
+using amplitude.tool.Users.Domain.Model;
+
+namespace amplitude.tool.Users.Presentation.Views
 {
     public interface IUserActivityView
     {
-        void ShowUserActivitiesFetched();
+        void ShowUserActivitiesFetched(UserActivity userActivities);
     }
 }

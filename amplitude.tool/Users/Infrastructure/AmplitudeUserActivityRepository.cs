@@ -4,8 +4,10 @@ using System.Net.Http.Headers;
 using System.Reactive.Linq;
 using System.Reactive.Threading.Tasks;
 using System.Text;
+using System.Text.Json;
 using amplitude.tool.Users.Domain.Model;
 using amplitude.tool.Users.Domain.Repositories;
+using amplitude.tool.Users.Infrastructure.Dtos;
 
 namespace amplitude.tool.Users.Infrastructure
 {
@@ -22,8 +24,8 @@ namespace amplitude.tool.Users.Infrastructure
         public IObservable<UserActivity> Fetch(UserId userId) =>
             client.GetStringAsync($"https://amplitude.com/api/2/useractivity?user={userId.Value}")
                 .ToObservable()
-                .Do(Console.Write)
-                .Select(result => new UserActivity());
+                .Select(result => JsonSerializer.Deserialize<UserActivityDto>(result))
+                .Select(userActivityDto => userActivityDto.ToUserActivity());
 
         void SetupClientHeaders(string apiKey, string amplitudeSecretKey)
         {

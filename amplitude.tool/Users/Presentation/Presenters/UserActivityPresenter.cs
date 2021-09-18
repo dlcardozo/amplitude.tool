@@ -1,7 +1,7 @@
 using System;
-using amplitude.tool.Users;
+using amplitude.tool.Users.Presentation.Views;
 
-namespace amplitude.tool
+namespace amplitude.tool.Users.Presentation.Presenters
 {
     public class UserActivityPresenter
     {
@@ -13,7 +13,7 @@ namespace amplitude.tool
 
             Context.Instance
                 .OnActivitiesFetched
-                .Subscribe(userActivities => this.view.ShowUserActivitiesFetched());
+                .Subscribe(userActivities => this.view.ShowUserActivitiesFetched(userActivities));
         }
     }
 }
