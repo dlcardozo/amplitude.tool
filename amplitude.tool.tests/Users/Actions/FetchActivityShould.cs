@@ -13,7 +13,7 @@ namespace amplitude.tool.tests.Users.Actions
     public class FetchActivityShould
     {
         [Test]
-        public void Emit_Activities()
+        public void EmitActivities()
         {
             var onActivitiesFetched = AnEvent<UserActivity>();
             var expected = AnUserActivityWithOne(ATrackedEvent("install_push"));

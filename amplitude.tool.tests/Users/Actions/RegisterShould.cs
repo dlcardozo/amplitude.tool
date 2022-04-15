@@ -15,7 +15,7 @@ namespace amplitude.tool.tests.Users.Actions
     public class RegisterShould
     {
         [Test]
-        public void Emit_An_User_Registered()
+        public void EmitAnUserRegistered()
         {
             var onUserRegistered = AnEvent<User>();
             var expected = new User(new UserId("UserId"));
@@ -27,7 +27,7 @@ namespace amplitude.tool.tests.Users.Actions
         }
 
         [Test]
-        public void Save_User_Registered()
+        public void SaveUserRegistered()
         {
             var repository = Substitute.For<UsersRepository>();
             var expected = new User(new UserId("UserId"));
