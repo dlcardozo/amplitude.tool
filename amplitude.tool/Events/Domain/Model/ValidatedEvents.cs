@@ -2,7 +2,7 @@ using System;
 using System.Collections.Generic;
 using amplitude.tool.Utilities;
 
-namespace amplitude.tool.tests.Events.Actions
+namespace amplitude.tool.Events.Domain.Model
 {
     public struct ValidatedEvents
     {

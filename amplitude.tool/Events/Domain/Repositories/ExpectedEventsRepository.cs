@@ -1,7 +1,8 @@
 using System;
 using System.Collections.Generic;
+using amplitude.tool.Events.Domain.Model;
 
-namespace amplitude.tool.tests.Events.Actions
+namespace amplitude.tool.Events.Domain.Repositories
 {
     public interface ExpectedEventsRepository
     {

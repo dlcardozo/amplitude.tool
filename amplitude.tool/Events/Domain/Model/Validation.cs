@@ -1,4 +1,4 @@
-namespace amplitude.tool.tests.Events.Actions
+namespace amplitude.tool.Events.Domain.Model
 {
     public struct Validation
     {
