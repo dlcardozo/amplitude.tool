@@ -1,7 +1,6 @@
-using System;
 using System.Collections.Generic;
-using System.Reactive;
 using System.Reactive.Linq;
+using amplitude.tool.Events.Domain.Actions;
 using amplitude.tool.Events.Domain.Model;
 using amplitude.tool.Events.Domain.Repositories;
 using NSubstitute;
@@ -23,18 +22,5 @@ namespace amplitude.tool.tests.Events.Actions
                 .Then(() => expectedEventsRepository.Received(1).AddEvents(Arg.Any<List<ExpectedEvent>>()))
                 .Run();
         }
-    }
-
-    public class AddEvents
-    {
-        readonly ExpectedEventsRepository expectedEventsRepository;
-
-        public AddEvents(ExpectedEventsRepository expectedEventsRepository)
-        {
-            this.expectedEventsRepository = expectedEventsRepository;
-        }
-
-        public IObservable<Unit> Do(List<ExpectedEvent> newEvents) => 
-            expectedEventsRepository.AddEvents(newEvents);
     }
 }
