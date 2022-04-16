@@ -1,10 +1,10 @@
 using System;
 using System.Collections.Generic;
 using System.Linq;
-using amplitude.tool.CrossEvents;
-using amplitude.tool.Events.Domain.Actions;
 using amplitude.tool.Events.Domain.Model;
+using amplitude.tool.Events.Presentation.Presenters;
 using amplitude.tool.Events.Presentation.Views;
+using amplitude.tool.Utilities;
 
 namespace amplitude.tool.Events.UnityDelivery.Views
 {
@@ -13,57 +13,37 @@ namespace amplitude.tool.Events.UnityDelivery.Views
         EventPresenter presenter;
 
         public EventView() => presenter = new EventPresenter(this);
-        
-        public void ShowValidationResult(List<Validation> validations)
-        {
-            Console.WriteLine("### Searching for events matching on User activity: ");
-            validations.ForEach(validation =>
-                Console.WriteLine($" # {validation.EventName} - {DisplayResult(validation)}"));
-            var resultColor = validations.Any(validation => !validation.IsValid)
-                ? ConsoleColor.Red
-                : ConsoleColor.Green;
-            var currentConsoleColor = Console.ForegroundColor;
-            Console.ForegroundColor = resultColor;
-            Console.WriteLine($"### Found {validations.Count(validation => validation.IsValid)} of {validations.Count} expected events", resultColor);
-            Console.ForegroundColor = currentConsoleColor;
-        }
-
-        public void ShowExpectedEventsAdded() => Console.WriteLine("Expected events added.");
-
-        string DisplayResult(Validation validation) => validation.IsValid ? "Found" : "Not Found";
 
         public void AskForExpectedEvents()
         {
             Console.WriteLine("Provide event names to validate, comma separated:");
             presenter.AddExpectedEvents(Console.ReadLine()?.Split(','));
         }
-    }
 
-    public class EventPresenter
-    {
-        readonly IEventView view;
-        Validate validate;
-        AddEvents addEvents;
+        public void ShowExpectedEventsAdded() => Console.WriteLine("Expected events added.");
 
-        public EventPresenter(IEventView view)
+        public void ShowValidationResult(List<Validation> validations)
         {
-            this.view = view;
-            validate = new Validate(Context.Instance.OnValidated, Context.Instance.ExpectedEventsRepository);
-            addEvents = new AddEvents(Context.Instance.ExpectedEventsRepository);
+            Console.WriteLine("### Searching for events matching on User activity: ");
             
-            EventBus.Instance
-                .On<CrossUserEvents>()
-                .Subscribe(crossUserEvents => validate.Do(crossUserEvents.Events));
-
-            Context.Instance.OnValidated
-                .Subscribe(validatedEvents => view.ShowValidationResult(validatedEvents.Validations));
+            validations.ForEach(validation =>
+                Console.WriteLine($" # {validation.EventName} - {DisplayResult(validation)}"));
+            
+            PrintValidationSummary(validations);
         }
 
-        public void AddExpectedEvents(string[] expectedEvents) =>
-            addEvents
-                .Do(expectedEvents
-                    .Select(eventName => new ExpectedEvent(eventName))
-                    .ToList())
-                .Subscribe(_ => view.ShowExpectedEventsAdded());
+
+        string DisplayResult(Validation validation) => validation.IsValid ? "Found" : "Not Found";
+
+        static void PrintValidationSummary(List<Validation> validations) =>
+            ConsoleExtensions.WriteLineWith(
+                $"### Found {validations.Count(validation => validation.IsValid)} of {validations.Count} expected events",
+                ValidationsColor(validations)
+            );
+
+        static ConsoleColor ValidationsColor(List<Validation> validations) =>
+            validations.Any(validation => !validation.IsValid)
+                ? ConsoleColor.Red
+                : ConsoleColor.Green;
     }
 }
