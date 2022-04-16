@@ -25,12 +25,10 @@ namespace amplitude.tool
 
             eventView = new EventView();
             userView = new UserView();
+            userActivityView = new UserActivityView(amplitude_key, amplitude_secret_key);
 
             eventView.AskForExpectedEvents();
-            
             userView.Init();
-
-            userActivityView = new UserActivityView(amplitude_key, amplitude_secret_key);
 
             CloseOn();
             ExitWhenNotStuck();   
@@ -38,8 +36,7 @@ namespace amplitude.tool
 
         static void CloseOn() =>
             Observable.Return(Unit.Default)
-                .Delay(TimeSpan.FromSeconds(30))
-                .SubscribeOn(Scheduler.CurrentThread)
+                .Delay(TimeSpan.FromSeconds(10))
                 .Subscribe(_ => stuck = false);
 
         static void ExitWhenNotStuck()
