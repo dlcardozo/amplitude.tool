@@ -21,13 +21,18 @@ namespace amplitude.tool.Events.Domain.Actions
         }
 
         public void Do(List<string> events) => expectedEventsRepository.Fetch()
-            .Select(expectedEvents => expectedEvents.ToDictionary(expectedEvent => expectedEvent.EventName))
-            .Select(expectedEvents => ValidateEvents(events, expectedEvents))
+            .Select(expectedEvents => ValidateEvents(expectedEvents, RemoveDuplicatesFrom(events)))
             .Subscribe(validatedEvents => onValidated.OnNext(new ValidatedEvents(validatedEvents)));
 
-        static List<Validation> ValidateEvents(List<string> events, Dictionary<string, ExpectedEvent> expectedEvents) =>
-            events
-                .Select(@event => new Validation(@event, expectedEvents.ContainsKey(@event)))
+        static List<Validation> ValidateEvents(List<ExpectedEvent> expectedEvents, Dictionary<string, string> events) =>
+            expectedEvents
+                .Select(expectedEvent => new Validation(expectedEvent.EventName, events.ContainsKey(expectedEvent.EventName)))
                 .ToList();
+
+        static Dictionary<string, string> RemoveDuplicatesFrom(List<string> events) =>
+            events
+                .GroupBy(eventName => eventName)
+                .Select(eventDuple => eventDuple.Key)
+                .ToDictionary(eventName => eventName);
     }
 }

@@ -28,7 +28,7 @@ namespace amplitude.tool.tests.Events.Actions
         {
             var events = new List<string> { "Events" };
             var onValidated = AnEvent<ValidatedEvents>();
-            var expected = new ValidatedEvents(new List<Validation>{new Validation("Events", false)});
+            var expected = new ValidatedEvents(new List<Validation>());
 
             Given(AValidate(onValidated))
                 .When(action => action.Do(events))
@@ -44,6 +44,22 @@ namespace amplitude.tool.tests.Events.Actions
             var expected = new ValidatedEvents(new List<Validation>{new Validation("Events", true)});
 
             Given(AValidate(onValidated, AnInMemoryExpectedEventsRepository(new List<ExpectedEvent>{new ExpectedEvent("Events")})))
+                .When(action => action.Do(events))
+                .Then(_ => onValidated, it => it.Receives(expected))
+                .Run();
+        }
+        
+        [Test]
+        public void CompareAPreLoadedListOfEventsWithNoMatchingEvents()
+        {
+            var events = new List<string> { "watch_tutorial", "random_event", "fine" };
+            var onValidated = AnEvent<ValidatedEvents>();
+            var expected = new ValidatedEvents(new List<Validation>
+            {
+                new Validation("watch_tutorial", true),
+            });
+
+            Given(AValidate(onValidated, AnInMemoryExpectedEventsRepository(new List<ExpectedEvent>{new ExpectedEvent("watch_tutorial")})))
                 .When(action => action.Do(events))
                 .Then(_ => onValidated, it => it.Receives(expected))
                 .Run();
