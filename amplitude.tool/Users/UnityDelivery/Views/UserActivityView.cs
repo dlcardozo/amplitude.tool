@@ -14,9 +14,12 @@ namespace amplitude.tool.Users.UnityDelivery.Views
             presenter = new UserActivityPresenter(this, amplitudeKey, amplitudeSecretKey);
         }
 
-        public void ShowUserActivitiesFetched(UserActivity userActivities) =>
+        public void ShowUserActivitiesFetched(UserActivity userActivities)
+        {
+            Console.WriteLine("### User Activity - Events tracked: ");
             userActivities
                 .TrackedEvents
                 .ForEach(trackedEvent => Console.WriteLine(trackedEvent.Name));
+        }
     }
 }

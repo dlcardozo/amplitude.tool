@@ -13,8 +13,20 @@ namespace amplitude.tool.Events.UnityDelivery.Views
         EventPresenter presenter;
 
         public EventView() => presenter = new EventPresenter(this);
-        public void ShowValidationResult(List<Validation> validations) => 
-            validations.ForEach(validation => Console.WriteLine($"Validation: {validation.EventName} - {DisplayResult(validation)}"));
+        
+        public void ShowValidationResult(List<Validation> validations)
+        {
+            Console.WriteLine("### Searching for events matching on User activity: ");
+            validations.ForEach(validation =>
+                Console.WriteLine($" # {validation.EventName} - {DisplayResult(validation)}"));
+            var resultColor = validations.Any(validation => !validation.IsValid)
+                ? ConsoleColor.Red
+                : ConsoleColor.Green;
+            var currentConsoleColor = Console.ForegroundColor;
+            Console.ForegroundColor = resultColor;
+            Console.WriteLine($"### Found {validations.Count(validation => validation.IsValid)} of {validations.Count} expected events", resultColor);
+            Console.ForegroundColor = currentConsoleColor;
+        }
 
         public void ShowExpectedEventsAdded() => Console.WriteLine("Expected events added.");
 
@@ -49,7 +61,9 @@ namespace amplitude.tool.Events.UnityDelivery.Views
 
         public void AddExpectedEvents(string[] expectedEvents) =>
             addEvents
-                .Do(expectedEvents.Select(x => new ExpectedEvent(x)).ToList())
+                .Do(expectedEvents
+                    .Select(eventName => new ExpectedEvent(eventName))
+                    .ToList())
                 .Subscribe(_ => view.ShowExpectedEventsAdded());
     }
 }
