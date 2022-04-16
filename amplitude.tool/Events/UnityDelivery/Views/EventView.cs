@@ -20,14 +20,14 @@ namespace amplitude.tool.Events.UnityDelivery.Views
 
         public void AskForExpectedEvents()
         {
-            Console.WriteLine("Provide event names to validate, comma separated:");
-            
-            using (var reader = new StreamReader(Console.ReadLine() ?? string.Empty))
-            using (var csv = new CsvReader(reader, CultureInfo.InvariantCulture))
-            {
-                var records = csv.GetRecords<CsvRow>();
-                presenter.AddExpectedEvents(records.Select(record => record.Event).ToArray());
-            }
+            Console.WriteLine("Provide event names in a CSV with an Event header, path to csv file:");
+
+            using var reader = new StreamReader(Console.ReadLine() ?? string.Empty);
+            using var csv = new CsvReader(reader, CultureInfo.InvariantCulture);
+            var expectedEvents = csv.GetRecords<CsvRow>()
+                .Select(record => record.Event)
+                .ToArray();
+            presenter.AddExpectedEvents(expectedEvents);
         }
 
         public void ShowExpectedEventsAdded() => Console.WriteLine("Expected events added.");

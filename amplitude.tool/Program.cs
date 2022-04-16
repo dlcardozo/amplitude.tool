@@ -4,6 +4,7 @@ using System.Reactive.Concurrency;
 using System.Reactive.Linq;
 using System.Threading;
 using amplitude.tool.CrossEvents;
+using amplitude.tool.Events;
 using amplitude.tool.Events.UnityDelivery.Views;
 using amplitude.tool.Users.UnityDelivery.Views;
 
@@ -27,22 +28,21 @@ namespace amplitude.tool
             userView = new UserView();
             userActivityView = new UserActivityView(amplitude_key, amplitude_secret_key);
 
+            Context.Instance
+                .OnValidated.Subscribe(_ => Close());
+            
             eventView.AskForExpectedEvents();
+            
             userView.Init();
-
-            CloseOn();
             ExitWhenNotStuck();   
         }
-
-        static void CloseOn() =>
-            Observable.Return(Unit.Default)
-                .Delay(TimeSpan.FromSeconds(10))
-                .Subscribe(_ => stuck = false);
 
         static void ExitWhenNotStuck()
         {
             while (stuck) 
                 Thread.Sleep(TimeSpan.FromSeconds(1));
         }
+
+        static void Close() => stuck = false;
     }
 }
