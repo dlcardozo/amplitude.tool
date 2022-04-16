@@ -1,5 +1,9 @@
 using System;
+using System.Linq;
+using System.Reactive.Linq;
+using amplitude.tool.CrossEvents;
 using amplitude.tool.Users.Domain.Actions;
+using amplitude.tool.Users.Domain.Model;
 using amplitude.tool.Users.Infrastructure;
 using amplitude.tool.Users.Presentation.Views;
 
@@ -24,7 +28,11 @@ namespace amplitude.tool.Users.Presentation.Presenters
             
             Context.Instance
                 .OnActivitiesFetched
+                .Do(Notify)
                 .Subscribe(userActivities => this.view.ShowUserActivitiesFetched(userActivities));
         }
+
+        static void Notify(UserActivity userActivities) => 
+            EventBus.Instance.Send(new CrossUserEvents(userActivities.TrackedEvents.Select(x => x.Name).ToList()));
     }
 }

@@ -1,12 +1,10 @@
 ﻿using System;
-using System.Net.Http;
 using System.Reactive;
 using System.Reactive.Concurrency;
 using System.Reactive.Linq;
 using System.Threading;
-using amplitude.tool.Events.Domain.Model;
-using amplitude.tool.Events.Presentation.Views;
-using amplitude.tool.Users;
+using amplitude.tool.CrossEvents;
+using amplitude.tool.Events.UnityDelivery.Views;
 using amplitude.tool.Users.UnityDelivery.Views;
 
 namespace amplitude.tool
@@ -15,7 +13,7 @@ namespace amplitude.tool
     {
         static UserView userView;
         static UserActivityView userActivityView;
-        static IEventView iEventView;
+        static EventView eventView;
         static bool stuck = true;
         static string amplitude_key = string.Empty;
         static string amplitude_secret_key = string.Empty;
@@ -24,7 +22,8 @@ namespace amplitude.tool
         {
             amplitude_key = args[0];
             amplitude_secret_key = args[1];
-            
+
+            eventView = new EventView();
             userView = new UserView();
             userView.Init();
 
