@@ -1,10 +1,14 @@
 using System;
 using System.Collections.Generic;
+using System.Globalization;
+using System.IO;
 using System.Linq;
 using amplitude.tool.Events.Domain.Model;
 using amplitude.tool.Events.Presentation.Presenters;
 using amplitude.tool.Events.Presentation.Views;
 using amplitude.tool.Utilities;
+using CsvHelper;
+using CsvHelper.Configuration;
 
 namespace amplitude.tool.Events.UnityDelivery.Views
 {
@@ -17,7 +21,13 @@ namespace amplitude.tool.Events.UnityDelivery.Views
         public void AskForExpectedEvents()
         {
             Console.WriteLine("Provide event names to validate, comma separated:");
-            presenter.AddExpectedEvents(Console.ReadLine()?.Split(','));
+            
+            using (var reader = new StreamReader(Console.ReadLine() ?? string.Empty))
+            using (var csv = new CsvReader(reader, CultureInfo.InvariantCulture))
+            {
+                var records = csv.GetRecords<CsvRow>();
+                presenter.AddExpectedEvents(records.Select(record => record.Event).ToArray());
+            }
         }
 
         public void ShowExpectedEventsAdded() => Console.WriteLine("Expected events added.");
@@ -45,5 +55,10 @@ namespace amplitude.tool.Events.UnityDelivery.Views
             validations.Any(validation => !validation.IsValid)
                 ? ConsoleColor.Red
                 : ConsoleColor.Green;
+    }
+    
+    public class CsvRow
+    {
+        public string Event { get; set; }
     }
 }
