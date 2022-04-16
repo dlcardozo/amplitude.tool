@@ -37,7 +37,7 @@ namespace amplitude.tool.Events.UnityDelivery.Views
             Console.WriteLine("### Searching for events matching on User activity: ");
             
             validations.ForEach(validation =>
-                Console.WriteLine($" # {validation.EventName} - {DisplayResult(validation)}"));
+                ConsoleExtensions.WriteLineWith($" # {validation.EventName} - {DisplayResult(validation)}", ValidationColor(validation)));
             
             PrintValidationSummary(validations);
         }
@@ -53,6 +53,11 @@ namespace amplitude.tool.Events.UnityDelivery.Views
 
         static ConsoleColor ValidationsColor(List<Validation> validations) =>
             validations.Any(validation => !validation.IsValid)
+                ? ConsoleColor.Red
+                : ConsoleColor.Green;
+        
+        static ConsoleColor ValidationColor(Validation validation) =>
+            !validation.IsValid
                 ? ConsoleColor.Red
                 : ConsoleColor.Green;
     }
