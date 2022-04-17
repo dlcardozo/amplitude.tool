@@ -14,15 +14,20 @@ namespace amplitude.tool.Events.UnityDelivery.Views
 {
     public class EventView : IEventView
     {
+        readonly string expectedEventsPath;
         EventPresenter presenter;
 
-        public EventView() => presenter = new EventPresenter(this);
+        public EventView(string expectedEventsPath)
+        {
+            this.expectedEventsPath = expectedEventsPath;
+            presenter = new EventPresenter(this);
+        }
 
         public void AskForExpectedEvents()
         {
             Console.WriteLine("Provide event names in a CSV with an Event header, path to csv file:");
 
-            using var reader = new StreamReader(Console.ReadLine() ?? string.Empty);
+            using var reader = new StreamReader(string.IsNullOrEmpty(expectedEventsPath) ? Console.ReadLine() : expectedEventsPath);
             using var csv = new CsvReader(reader, CultureInfo.InvariantCulture);
             var expectedEvents = csv.GetRecords<CsvRow>()
                 .Select(record => record.Event)

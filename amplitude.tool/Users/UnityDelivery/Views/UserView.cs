@@ -22,7 +22,7 @@ namespace amplitude.tool.Users.UnityDelivery.Views
         public void AskForUserId()
         {
             Console.WriteLine($"User Id required, please provide one:");
-            presenter.RegisterUserId(Console.ReadLine());
+            presenter.RegisterUserId(Console.ReadLine()?.Trim());
         }
     }
 }

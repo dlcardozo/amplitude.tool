@@ -18,13 +18,15 @@ namespace amplitude.tool
         static bool stuck = true;
         static string amplitude_key = string.Empty;
         static string amplitude_secret_key = string.Empty;
+        static string expected_events_path = string.Empty;
 
         static void Main(string[] args)
         {
-            amplitude_key = args[0];
-            amplitude_secret_key = args[1];
+            amplitude_key = args[0].Trim();
+            amplitude_secret_key = args[1].Trim();
+            expected_events_path = args.Length > 2 ? args[2].Trim() : string.Empty;
 
-            eventView = new EventView();
+            eventView = new EventView(expected_events_path);
             userView = new UserView();
             userActivityView = new UserActivityView(amplitude_key, amplitude_secret_key);
 
