@@ -29,7 +29,7 @@ namespace amplitude.tool.Users.Presentation.Presenters
             Context.Instance
                 .OnActivitiesFetched
                 .Do(Notify)
-                .Subscribe(userActivities => this.view.ShowUserActivitiesFetched(userActivities));
+                .Subscribe();
         }
 
         static void Notify(UserActivity userActivities) => 

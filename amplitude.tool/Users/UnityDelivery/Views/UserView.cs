@@ -17,7 +17,7 @@ namespace amplitude.tool.Users.UnityDelivery.Views
             presenter.Init();
 
         public void ShowUserRegistered(string userId) => 
-            Console.WriteLine($"User registered with ID: {userId}");
+            Console.WriteLine($"Testing started on User ID: {userId}");
 
         public void AskForUserId()
         {
