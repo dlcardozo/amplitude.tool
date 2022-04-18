@@ -12,7 +12,7 @@ namespace amplitude.tool.Users.Infrastructure.Dtos
 
         public UserActivity ToUserActivity() => 
             new UserActivity(events
-                .Select(x => new TrackedEvent(x.event_type))
+                .Select(x => new TrackedEvent(x.event_type, x.event_properties))
                 .ToList()
             );
     }

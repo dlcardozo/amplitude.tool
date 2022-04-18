@@ -1,4 +1,5 @@
 using System;
+using System.Collections.Generic;
 using System.Linq;
 using amplitude.tool.CrossEvents;
 using amplitude.tool.Events.Domain.Actions;
@@ -22,11 +23,16 @@ namespace amplitude.tool.Events.Presentation.Presenters
             
             EventBus.Instance
                 .On<CrossUserEvents>()
-                .Subscribe(crossUserEvents => validate.Do(crossUserEvents.Events));
+                .Subscribe(crossUserEvents => validate.Do(CreateSharedValidateEventsFrom(crossUserEvents)));
 
             Context.Instance.OnValidated
                 .Subscribe(validatedEvents => view.ShowValidationResult(validatedEvents.Validations));
         }
+
+        static List<SharedValidateEvent> CreateSharedValidateEventsFrom(CrossUserEvents crossUserEvents) => 
+            crossUserEvents.Events
+                .Select(@event => new SharedValidateEvent(@event.EventName, @event.EventProperties))
+                .ToList();
 
         public void AddExpectedEvents(SharedExpectedEvent[] expectedEvents) =>
             addEvents

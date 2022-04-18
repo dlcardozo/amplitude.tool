@@ -1,4 +1,5 @@
 using System;
+using System.Collections.Generic;
 using System.Linq;
 using System.Reactive.Linq;
 using amplitude.tool.CrossEvents;
@@ -33,6 +34,11 @@ namespace amplitude.tool.Users.Presentation.Presenters
         }
 
         static void Notify(UserActivity userActivities) => 
-            EventBus.Instance.Send(new CrossUserEvents(userActivities.TrackedEvents.Select(x => x.Name).ToList()));
+            EventBus.Instance.Send(new CrossUserEvents(CreateCrossEventsFrom(userActivities)));
+
+        static List<CrossEvent> CreateCrossEventsFrom(UserActivity userActivities) =>
+            userActivities.TrackedEvents
+                .Select(trackedEvent => new CrossEvent(trackedEvent.Name, trackedEvent.Properties))
+                .ToList();
     }
 }

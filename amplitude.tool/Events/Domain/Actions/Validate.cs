@@ -5,6 +5,7 @@ using System.Reactive.Linq;
 using System.Reactive.Subjects;
 using amplitude.tool.Events.Domain.Model;
 using amplitude.tool.Events.Domain.Repositories;
+using amplitude.tool.Events.Shared;
 
 namespace amplitude.tool.Events.Domain.Actions
 {
@@ -20,17 +21,25 @@ namespace amplitude.tool.Events.Domain.Actions
             this.expectedEventsRepository = expectedEventsRepository;
         }
 
-        public void Do(List<string> events) => expectedEventsRepository.Fetch()
+        public void Do(List<SharedValidateEvent> events) => expectedEventsRepository.Fetch()
             .Select(expectedEvents => ValidateEvents(expectedEvents, RemoveDuplicatesFrom(events)))
             .Subscribe(validatedEvents => onValidated.OnNext(new ValidatedEvents(validatedEvents)));
 
         static List<Validation> ValidateEvents(List<ExpectedEvent> expectedEvents, Dictionary<string, string> events) =>
             expectedEvents
-                .Select(expectedEvent => new Validation(expectedEvent.EventName, events.ContainsKey(expectedEvent.EventName)))
+                .Select(expectedEvent => CreateValidation(events, expectedEvent))
                 .ToList();
 
-        static Dictionary<string, string> RemoveDuplicatesFrom(List<string> events) =>
+        static Validation CreateValidation(Dictionary<string, string> events, ExpectedEvent expectedEvent) => 
+            new Validation(
+                expectedEvent.EventName,
+                events.ContainsKey(expectedEvent.EventName),
+                new Dictionary<string, object>()
+            );
+
+        static Dictionary<string, string> RemoveDuplicatesFrom(List<SharedValidateEvent> events) =>
             events
+                .Select(@event => @event.EventName)
                 .GroupBy(eventName => eventName)
                 .Select(eventDuple => eventDuple.Key)
                 .ToDictionary(eventName => eventName);
