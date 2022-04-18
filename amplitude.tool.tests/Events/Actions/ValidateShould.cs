@@ -80,21 +80,42 @@ namespace amplitude.tool.tests.Events.Actions
         }
         
         [Test]
-        public void CheckForAnEventAndItsProperties()
+        public void FailForAnEventAndWithNoMatchingProperties()
         {
             var events = new List<SharedValidateEvent>
             {
-                new SharedValidateEvent("watch_tutorial", new Dictionary<string, object>()),
+                new SharedValidateEvent("watch_tutorial", new Dictionary<string, object>{{"is_true", true}}),
                 new SharedValidateEvent("random_event", new Dictionary<string, object>()),
                 new SharedValidateEvent("fine", new Dictionary<string, object>()),
             };
             var onValidated = AnEvent<ValidatedEvents>();
             var expected = new ValidatedEvents(new List<Validation>
             {
-                AValidation("watch_tutorial", true, new Dictionary<string, object>()),
+                AValidation("watch_tutorial", false, new Dictionary<string, object>{{"is_true", false}}),
             });
 
-            Given(AValidate(onValidated, AnInMemoryExpectedEventsRepository(new List<ExpectedEvent>{AnExpectedEvent("watch_tutorial")})))
+            Given(AValidate(onValidated, AnInMemoryExpectedEventsRepository(new List<ExpectedEvent>{AnExpectedEvent("watch_tutorial", new Dictionary<string, object>{{"is_true", false}})})))
+                .When(action => action.Do(events))
+                .Then(_ => onValidated, it => it.Receives(expected))
+                .Run();
+        }
+        
+        [Test]
+        public void SucceedForAnEventAndItsProperties()
+        {
+            var events = new List<SharedValidateEvent>
+            {
+                new SharedValidateEvent("watch_tutorial", new Dictionary<string, object>{{"is_true", true}}),
+                new SharedValidateEvent("random_event", new Dictionary<string, object>()),
+                new SharedValidateEvent("fine", new Dictionary<string, object>()),
+            };
+            var onValidated = AnEvent<ValidatedEvents>();
+            var expected = new ValidatedEvents(new List<Validation>
+            {
+                AValidation("watch_tutorial", true, new Dictionary<string, object>{{"is_true", true}}),
+            });
+
+            Given(AValidate(onValidated, AnInMemoryExpectedEventsRepository(new List<ExpectedEvent>{AnExpectedEvent("watch_tutorial", new Dictionary<string, object>{{"is_true", true}})})))
                 .When(action => action.Do(events))
                 .Then(_ => onValidated, it => it.Receives(expected))
                 .Run();

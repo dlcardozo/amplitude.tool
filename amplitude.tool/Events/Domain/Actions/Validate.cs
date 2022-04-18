@@ -1,11 +1,13 @@
 using System;
 using System.Collections.Generic;
+using System.Diagnostics.Tracing;
 using System.Linq;
 using System.Reactive.Linq;
 using System.Reactive.Subjects;
 using amplitude.tool.Events.Domain.Model;
 using amplitude.tool.Events.Domain.Repositories;
 using amplitude.tool.Events.Shared;
+using amplitude.tool.Utilities;
 
 namespace amplitude.tool.Events.Domain.Actions
 {
@@ -22,19 +24,21 @@ namespace amplitude.tool.Events.Domain.Actions
         }
 
         public void Do(List<SharedValidateEvent> events) => expectedEventsRepository.Fetch()
-            .Select(expectedEvents => ValidateEvents(expectedEvents, RemoveDuplicatesFrom(events)))
+            .Select(expectedEvents => ValidateEvents(expectedEvents, events))
             .Subscribe(validatedEvents => onValidated.OnNext(new ValidatedEvents(validatedEvents)));
 
-        static List<Validation> ValidateEvents(List<ExpectedEvent> expectedEvents, Dictionary<string, string> events) =>
+        static List<Validation> ValidateEvents(List<ExpectedEvent> expectedEvents, List<SharedValidateEvent> events) =>
             expectedEvents
                 .Select(expectedEvent => CreateValidation(events, expectedEvent))
                 .ToList();
 
-        static Validation CreateValidation(Dictionary<string, string> events, ExpectedEvent expectedEvent) => 
+        static Validation CreateValidation(List<SharedValidateEvent> events, ExpectedEvent expectedEvent) => 
             new Validation(
                 expectedEvent.EventName,
-                events.ContainsKey(expectedEvent.EventName),
-                new Dictionary<string, object>()
+                events.Any(@event => 
+                    @event.EventName.Equals(expectedEvent.EventName) && 
+                    @event.EventProperties.SafeSequenceEqual(expectedEvent.EventProperties)),
+                expectedEvent.EventProperties
             );
 
         static Dictionary<string, string> RemoveDuplicatesFrom(List<SharedValidateEvent> events) =>
