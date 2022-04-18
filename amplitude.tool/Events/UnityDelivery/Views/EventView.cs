@@ -3,6 +3,7 @@ using System.Collections.Generic;
 using System.Globalization;
 using System.IO;
 using System.Linq;
+using System.Text.RegularExpressions;
 using amplitude.tool.Events.Domain.Model;
 using amplitude.tool.Events.Presentation.Presenters;
 using amplitude.tool.Events.Presentation.Views;
@@ -30,9 +31,7 @@ namespace amplitude.tool.Events.UnityDelivery.Views
 
             using var reader = new StreamReader(string.IsNullOrEmpty(expectedEventsPath) ? Console.ReadLine() : expectedEventsPath);
             using var csv = new CsvReader(reader, CultureInfo.InvariantCulture);
-            // var expectedEvents = csv.GetRecords<CsvRow>()
-            //     .Select(record => record.Event)
-            //     .ToArray();
+         
             var expectedEvents = csv.GetRecords<CsvRow>()
                 .Select(record => new SharedExpectedEvent(record.Event, ConvertEventPropertiesFrom(record)))
                 .ToArray();
@@ -45,11 +44,17 @@ namespace amplitude.tool.Events.UnityDelivery.Views
         {
             Console.WriteLine("### Searching for events matching on User activity: ");
             
-            validations.ForEach(validation =>
-                ConsoleExtensions.WriteLineWith($" # {validation.EventName} - {DisplayResult(validation)}", ValidationColor(validation)));
+            validations.ForEach(WriteValidationOutput);
             
             PrintValidationSummary(validations);
         }
+
+        void WriteValidationOutput(Validation validation) =>
+            ConsoleExtensions.WriteLineWith(
+                validation.EventProperties.Count == 0
+                    ? $" # {validation.EventName} - {DisplayResult(validation)}"
+                    : $" # {validation.EventName} - {DisplayResult(validation)} - Properties: {validation.EventPropertiesToString()}",
+                ValidationColor(validation));
 
 
         string DisplayResult(Validation validation) => validation.IsValid ? "Found" : "Not Found";
@@ -76,7 +81,21 @@ namespace amplitude.tool.Events.UnityDelivery.Views
                 return new Dictionary<string, object>();
             
             var tuple = csvRow.Event_Properties.Split(':');
-            return new Dictionary<string, object>{{tuple[0], tuple[1]}};
+            return new Dictionary<string, object>{{tuple[0].Trim(), CastToValue(tuple[1].Trim())}};
+        }
+
+        static object CastToValue(string value)
+        {
+            if (Regex.IsMatch(value, "[Tt]rue|[Ff]alse"))
+                return Convert.ToBoolean(value);
+
+            if (Regex.IsMatch(value, "^[0-9]*$"))
+                return Convert.ToInt64(value);
+            
+            if (Regex.IsMatch(value, "^[+-]?([0-9]+([.][0-9]*)?|[.][0-9]+)$"))
+                return Convert.ToDouble(value);
+
+            return value;
         }
     }
 }

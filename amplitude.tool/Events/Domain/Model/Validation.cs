@@ -33,7 +33,7 @@ namespace amplitude.tool.Events.Domain.Model
             $"{IsValid}, " +
             $"[{EventPropertiesToString()}]";
 
-        string EventPropertiesToString() => 
+        public string EventPropertiesToString() => 
             EventProperties != null 
                 ? String.Join(", ", EventProperties.Select(x => $"{x.Key} - {x.Value}").ToList()) 
                 : "[]";
