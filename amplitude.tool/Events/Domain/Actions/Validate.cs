@@ -1,13 +1,11 @@
 using System;
 using System.Collections.Generic;
-using System.Diagnostics.Tracing;
 using System.Linq;
 using System.Reactive.Linq;
 using System.Reactive.Subjects;
 using amplitude.tool.Events.Domain.Model;
 using amplitude.tool.Events.Domain.Repositories;
 using amplitude.tool.Events.Shared;
-using amplitude.tool.Utilities;
 
 namespace amplitude.tool.Events.Domain.Actions
 {
@@ -36,16 +34,11 @@ namespace amplitude.tool.Events.Domain.Actions
             new Validation(
                 expectedEvent.EventName,
                 events.Any(@event => 
-                    @event.EventName.Equals(expectedEvent.EventName) && 
-                    @event.EventProperties.SafeSequenceEqual(expectedEvent.EventProperties)),
+                    @event.EventName.Equals(expectedEvent.EventName) && AreSameProperties(expectedEvent, @event)),
                 expectedEvent.EventProperties
             );
 
-        static Dictionary<string, string> RemoveDuplicatesFrom(List<SharedValidateEvent> events) =>
-            events
-                .Select(@event => @event.EventName)
-                .GroupBy(eventName => eventName)
-                .Select(eventDuple => eventDuple.Key)
-                .ToDictionary(eventName => eventName);
+        static bool AreSameProperties(ExpectedEvent expectedEvent, SharedValidateEvent @event) =>
+            expectedEvent.HasEventProperties() || expectedEvent.HasSameProperties(@event.EventProperties);
     }
 }

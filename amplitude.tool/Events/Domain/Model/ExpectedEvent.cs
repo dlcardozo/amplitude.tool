@@ -1,4 +1,5 @@
 using System.Collections.Generic;
+using amplitude.tool.Utilities;
 
 namespace amplitude.tool.Events.Domain.Model
 {
@@ -12,5 +13,10 @@ namespace amplitude.tool.Events.Domain.Model
             EventName = eventName;
             EventProperties = eventProperties;
         }
+
+        public bool HasEventProperties() => EventProperties.Count <= 0;
+
+        public bool HasSameProperties(Dictionary<string, object> eventProperties) => 
+            EventProperties.SafeSequenceEqual(eventProperties);
     }
 }
