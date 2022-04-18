@@ -4,6 +4,7 @@ using amplitude.tool.CrossEvents;
 using amplitude.tool.Events.Domain.Actions;
 using amplitude.tool.Events.Domain.Model;
 using amplitude.tool.Events.Presentation.Views;
+using amplitude.tool.Events.Shared;
 
 namespace amplitude.tool.Events.Presentation.Presenters
 {
@@ -27,10 +28,10 @@ namespace amplitude.tool.Events.Presentation.Presenters
                 .Subscribe(validatedEvents => view.ShowValidationResult(validatedEvents.Validations));
         }
 
-        public void AddExpectedEvents(string[] expectedEvents) =>
+        public void AddExpectedEvents(SharedExpectedEvent[] expectedEvents) =>
             addEvents
                 .Do(expectedEvents
-                    .Select(eventName => new ExpectedEvent(eventName))
+                    .Select(expectedEvent => new ExpectedEvent(expectedEvent.EventName, expectedEvent.EventProperties))
                     .ToList())
                 .Subscribe(_ => view.ShowExpectedEventsAdded());
     }

@@ -6,6 +6,7 @@ using System.Linq;
 using amplitude.tool.Events.Domain.Model;
 using amplitude.tool.Events.Presentation.Presenters;
 using amplitude.tool.Events.Presentation.Views;
+using amplitude.tool.Events.Shared;
 using amplitude.tool.Utilities;
 using CsvHelper;
 using CsvHelper.Configuration;
@@ -29,8 +30,11 @@ namespace amplitude.tool.Events.UnityDelivery.Views
 
             using var reader = new StreamReader(string.IsNullOrEmpty(expectedEventsPath) ? Console.ReadLine() : expectedEventsPath);
             using var csv = new CsvReader(reader, CultureInfo.InvariantCulture);
+            // var expectedEvents = csv.GetRecords<CsvRow>()
+            //     .Select(record => record.Event)
+            //     .ToArray();
             var expectedEvents = csv.GetRecords<CsvRow>()
-                .Select(record => record.Event)
+                .Select(record => new SharedExpectedEvent(record.Event, ConvertEventPropertiesFrom(record)))
                 .ToArray();
             presenter.AddExpectedEvents(expectedEvents);
         }
@@ -60,16 +64,19 @@ namespace amplitude.tool.Events.UnityDelivery.Views
             validations.Any(validation => !validation.IsValid)
                 ? ConsoleColor.Red
                 : ConsoleColor.Green;
-        
+
         static ConsoleColor ValidationColor(Validation validation) =>
             !validation.IsValid
                 ? ConsoleColor.Red
                 : ConsoleColor.Green;
-    }
-    
-    public class CsvRow
-    {
-        public string Event { get; set; }
-        public string Event_Properties { get; set; }
+
+        static Dictionary<string, object> ConvertEventPropertiesFrom(CsvRow csvRow)
+        {
+            if (string.IsNullOrEmpty(csvRow.Event_Properties))
+                return new Dictionary<string, object>();
+            
+            var tuple = csvRow.Event_Properties.Split(':');
+            return new Dictionary<string, object>{{tuple[0], tuple[1]}};
+        }
     }
 }

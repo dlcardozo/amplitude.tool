@@ -1,6 +1,7 @@
 using System.Collections.Generic;
 using amplitude.tool.Events.Domain.Model;
 using NUnit.Framework;
+using static amplitude.tool.tests.Events.Mothers.ExpectedEventMother;
 using static amplitude.tool.tests.Events.Mothers.ExpectedEventsRepositoryMother;
 using static amplitude.tool.tests.Events.Mothers.ValidateMother;
 using static amplitude.tool.tests.Mothers.EventMother;
@@ -43,7 +44,7 @@ namespace amplitude.tool.tests.Events.Actions
             var onValidated = AnEvent<ValidatedEvents>();
             var expected = new ValidatedEvents(new List<Validation>{new Validation("Events", true)});
 
-            Given(AValidate(onValidated, AnInMemoryExpectedEventsRepository(new List<ExpectedEvent>{new ExpectedEvent("Events")})))
+            Given(AValidate(onValidated, AnInMemoryExpectedEventsRepository(new List<ExpectedEvent>{AnExpectedEvent("Events")})))
                 .When(action => action.Do(events))
                 .Then(_ => onValidated, it => it.Receives(expected))
                 .Run();
@@ -59,7 +60,7 @@ namespace amplitude.tool.tests.Events.Actions
                 new Validation("watch_tutorial", true),
             });
 
-            Given(AValidate(onValidated, AnInMemoryExpectedEventsRepository(new List<ExpectedEvent>{new ExpectedEvent("watch_tutorial")})))
+            Given(AValidate(onValidated, AnInMemoryExpectedEventsRepository(new List<ExpectedEvent>{AnExpectedEvent("watch_tutorial")})))
                 .When(action => action.Do(events))
                 .Then(_ => onValidated, it => it.Receives(expected))
                 .Run();
