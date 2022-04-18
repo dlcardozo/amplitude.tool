@@ -1,4 +1,5 @@
 using System.Collections.Generic;
+using System.Linq;
 using amplitude.tool.Utilities;
 
 namespace amplitude.tool.Events.Domain.Model
@@ -16,7 +17,7 @@ namespace amplitude.tool.Events.Domain.Model
 
         public bool HasEventProperties() => EventProperties.Count <= 0;
 
-        public bool HasSameProperties(Dictionary<string, object> eventProperties) => 
-            EventProperties.SafeSequenceEqual(eventProperties);
+        public bool HasExpectedProperties(Dictionary<string, object> eventProperties) =>
+            EventProperties.All(x => eventProperties.ContainsKey(x.Key) && eventProperties[x.Key].Equals(x.Value));
     }
 }

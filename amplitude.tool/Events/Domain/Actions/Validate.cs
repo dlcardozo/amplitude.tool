@@ -6,6 +6,7 @@ using System.Reactive.Subjects;
 using amplitude.tool.Events.Domain.Model;
 using amplitude.tool.Events.Domain.Repositories;
 using amplitude.tool.Events.Shared;
+using amplitude.tool.Utilities;
 
 namespace amplitude.tool.Events.Domain.Actions
 {
@@ -30,15 +31,15 @@ namespace amplitude.tool.Events.Domain.Actions
                 .Select(expectedEvent => CreateValidation(events, expectedEvent))
                 .ToList();
 
-        static Validation CreateValidation(List<SharedValidateEvent> events, ExpectedEvent expectedEvent) => 
+        static Validation CreateValidation(List<SharedValidateEvent> events, ExpectedEvent expectedEvent) =>
             new Validation(
                 expectedEvent.EventName,
-                events.Any(@event => 
-                    @event.EventName.Equals(expectedEvent.EventName) && AreSameProperties(expectedEvent, @event)),
+                events.Any(@event =>
+                    @event.EventName.Equals(expectedEvent.EventName) && HasExpectedProperties(expectedEvent, @event)),
                 expectedEvent.EventProperties
             );
 
-        static bool AreSameProperties(ExpectedEvent expectedEvent, SharedValidateEvent @event) =>
-            expectedEvent.HasEventProperties() || expectedEvent.HasSameProperties(@event.EventProperties);
+        static bool HasExpectedProperties(ExpectedEvent expectedEvent, SharedValidateEvent @event) =>
+            expectedEvent.HasEventProperties() || expectedEvent.HasExpectedProperties(@event.EventProperties);
     }
 }

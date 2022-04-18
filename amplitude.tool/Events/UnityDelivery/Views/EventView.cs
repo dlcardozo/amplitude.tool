@@ -3,14 +3,12 @@ using System.Collections.Generic;
 using System.Globalization;
 using System.IO;
 using System.Linq;
-using System.Text.RegularExpressions;
 using amplitude.tool.Events.Domain.Model;
 using amplitude.tool.Events.Presentation.Presenters;
 using amplitude.tool.Events.Presentation.Views;
 using amplitude.tool.Events.Shared;
 using amplitude.tool.Utilities;
 using CsvHelper;
-using CsvHelper.Configuration;
 
 namespace amplitude.tool.Events.UnityDelivery.Views
 {
@@ -81,21 +79,7 @@ namespace amplitude.tool.Events.UnityDelivery.Views
                 return new Dictionary<string, object>();
             
             var tuple = csvRow.Event_Properties.Split(':');
-            return new Dictionary<string, object>{{tuple[0].Trim(), CastToValue(tuple[1].Trim())}};
-        }
-
-        static object CastToValue(string value)
-        {
-            if (Regex.IsMatch(value, "[Tt]rue|[Ff]alse"))
-                return Convert.ToBoolean(value);
-
-            if (Regex.IsMatch(value, "^[0-9]*$"))
-                return Convert.ToInt64(value);
-            
-            if (Regex.IsMatch(value, "^[+-]?([0-9]+([.][0-9]*)?|[.][0-9]+)$"))
-                return Convert.ToDouble(value);
-
-            return value;
+            return new Dictionary<string, object>{{tuple[0].Trim(), CastExtension.CastToValue(tuple[1].Trim())}};
         }
     }
 }

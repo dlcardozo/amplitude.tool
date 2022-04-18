@@ -135,6 +135,25 @@ namespace amplitude.tool.tests.Events.Actions
                 .Then(_ => onValidated, it => it.Receives(expected))
                 .Run();
         }
+        
+        [Test]
+        public void SucceedForAnEventWithOneExpectedProperties()
+        {
+            var events = new List<SharedValidateEvent>
+            {
+                new SharedValidateEvent("watch_tutorial", new Dictionary<string, object>{{"is_true", true}, {"is_false", false}, {"nothing", "nothing"}}),
+            };
+            var onValidated = AnEvent<ValidatedEvents>();
+            var expected = new ValidatedEvents(new List<Validation>
+            {
+                AValidation("watch_tutorial", true, new Dictionary<string, object>{{"is_true", true}}),
+            });
+
+            Given(AValidate(onValidated, AnInMemoryExpectedEventsRepository(new List<ExpectedEvent>{AnExpectedEvent("watch_tutorial", new Dictionary<string, object>{{"is_true", true}})})))
+                .When(action => action.Do(events))
+                .Then(_ => onValidated, it => it.Receives(expected))
+                .Run();
+        }
     }
     
 }
