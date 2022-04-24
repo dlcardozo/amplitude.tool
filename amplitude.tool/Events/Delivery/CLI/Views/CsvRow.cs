@@ -1,4 +1,4 @@
-namespace amplitude.tool.Events.UnityDelivery.Views
+namespace amplitude.tool.Events.Delivery.CLI.Views
 {
     public class CsvRow
     {

@@ -3,7 +3,7 @@ using amplitude.tool.Users.Domain.Model;
 using amplitude.tool.Users.Presentation.Presenters;
 using amplitude.tool.Users.Presentation.Views;
 
-namespace amplitude.tool.Users.UnityDelivery.Views
+namespace amplitude.tool.Users.Delivery.CLI.Views
 {
     public class UserActivityView : IUserActivityView
     {

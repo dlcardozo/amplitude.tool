@@ -5,8 +5,8 @@ using System.Reactive.Linq;
 using System.Threading;
 using amplitude.tool.CrossEvents;
 using amplitude.tool.Events;
-using amplitude.tool.Events.UnityDelivery.Views;
-using amplitude.tool.Users.UnityDelivery.Views;
+using amplitude.tool.Events.Delivery.CLI.Views;
+using amplitude.tool.Users.Delivery.CLI.Views;
 
 namespace amplitude.tool
 {

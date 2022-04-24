@@ -2,7 +2,7 @@ using System;
 using amplitude.tool.Users.Presentation.Presenters;
 using amplitude.tool.Users.Presentation.Views;
 
-namespace amplitude.tool.Users.UnityDelivery.Views
+namespace amplitude.tool.Users.Delivery.CLI.Views
 {
     public class UserView : IUserView
     {

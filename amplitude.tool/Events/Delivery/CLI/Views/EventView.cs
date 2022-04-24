@@ -10,7 +10,7 @@ using amplitude.tool.Events.Shared;
 using amplitude.tool.Utilities;
 using CsvHelper;
 
-namespace amplitude.tool.Events.UnityDelivery.Views
+namespace amplitude.tool.Events.Delivery.CLI.Views
 {
     public class EventView : IEventView
     {
